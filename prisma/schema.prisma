@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isActive    Boolean  @default(false)
+  maxVotes    Int      @default(3)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  groups      Group[]
+  ballots     Ballot[]
+}
+
+model Group {
+  id         String      @id @default(cuid())
+  eventId    String
+  name       String
+  event      Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  candidates Candidate[]
+
+  @@index([eventId])
+}
+
+model Candidate {
+  id          String @id @default(cuid())
+  groupId     String
+  name        String
+  description String?
+  group       Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  votes       Vote[]
+
+  @@index([groupId])
+}
+
+model Ballot {
+  id        String   @id @default(cuid())
+  eventId   String
+  role      String   @default("learner")
+  createdAt DateTime @default(now())
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  votes     Vote[]
+
+  @@index([eventId])
+}
+
+model Vote {
+  id          String    @id @default(cuid())
+  ballotId    String
+  candidateId String
+  ballot      Ballot    @relation(fields: [ballotId], references: [id], onDelete: Cascade)
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([ballotId])
+  @@index([candidateId])
+}
