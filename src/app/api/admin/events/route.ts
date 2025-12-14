@@ -11,7 +11,7 @@ export async function GET() {
     const events = await prisma.event.findMany({
       include: {
         _count: {
-          select: { voters: true, groups: true },
+          select: { ballots: true, groups: true },
         },
       },
       orderBy: { createdAt: 'desc' },

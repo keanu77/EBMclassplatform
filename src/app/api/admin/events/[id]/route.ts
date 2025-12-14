@@ -21,7 +21,7 @@ export async function GET(
             candidates: true,
           },
         },
-        voters: true,
+        ballots: true,
         _count: {
           select: { ballots: true },
         },
