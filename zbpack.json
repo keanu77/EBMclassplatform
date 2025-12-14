@@ -1,5 +1,3 @@
 {
-  "dockerfile": {
-    "path": "./Dockerfile"
-  }
+  "build_plan": "nodejs"
 }
